@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -96,7 +97,31 @@ public class Main {
     }
 
     private static void loadListFile() {
-        System.out.println("Open is coming soon.");
+        JFileChooser chooser = new JFileChooser();
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        chooser.setCurrentDirectory(workingDirectory);
+
+        if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+            System.out.println("Open canceled.");
+            return;
+        }
+
+        Path selectedPath = chooser.getSelectedFile().toPath();
+
+        try {
+            List<String> lines = Files.readAllLines(selectedPath);
+            list.clear();
+            for (String line : lines) {
+                list.add(line);
+            }
+
+            System.out.println();
+            System.out.println("File name: " + selectedPath.getFileName().toString());
+            System.out.println("Total lines: " + lines.size());
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
     }
 
     private static void saveListFile() {
@@ -109,7 +134,6 @@ public class Main {
             System.out.println("Save canceled.");
             return;
         }
-
 
         String fileName = chooser.getSelectedFile().getPath();
         if (!fileName.endsWith(".txt")) {
